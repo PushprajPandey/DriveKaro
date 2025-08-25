@@ -1,6 +1,6 @@
-# NeedForRent - Car Rental System
+# Rentyor - Car Rental System
 
-NeedForRent a modern, full-featured car rental system built with the MERN stack (MongoDB, Express.js, React.js, Node.js). This application provides a seamless experience for users to browse, search, and book rental cars.
+Rentyor a modern, full-featured car rental system built with the MERN stack (MongoDB, Express.js, React.js, Node.js). This application provides a seamless experience for users to browse, search, and book rental cars.
 
 ## Features
 
@@ -92,8 +92,8 @@ server/
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/PushprajPandey/NeedForRent.git
-    cd NeedForRent
+    git clone https://github.com/PushprajPandey/Rentyor.git
+    cd Rentyor
     ```
 
 2. Install backend dependencies:
@@ -203,7 +203,7 @@ The Node.js backend can be deployed to services like Heroku, AWS Elastic Beansta
 1. **Create a Heroku app:**
 
     ```bash
-    heroku create needforrent-app
+    heroku create Rentyor-app
     ```
 
 2. **Add environment variables:**
