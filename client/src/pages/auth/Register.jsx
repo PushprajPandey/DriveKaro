@@ -122,7 +122,7 @@ export default function Register({ setActiveIndex }) {
         try {
             setIsLoading(true);
             const res = await register(name, email, password, phone, address);
-            
+
             if (res.next === "register") {
                 setFormError(res.message || "Registration failed. Please try again.");
             } else if (res.next === "login") {
@@ -152,13 +152,13 @@ export default function Register({ setActiveIndex }) {
     return (
         <div className="auth-card">
             <div className="logo-container">
-                <span className="brand-text">VeloRent</span>
+                <span className="brand-text">DriveKaro</span>
             </div>
-            
+
             <h3>Create your account</h3>
-            
+
             {formError && <Alert variant="danger">{formError}</Alert>}
-            
+
             <Form className="w-100" onSubmit={handleSubmit}>
                 <FloatingLabel controlId="registerName" label="Full Name">
                     <Form.Control
@@ -202,11 +202,8 @@ export default function Register({ setActiveIndex }) {
                         />
                         {passwordError && <Form.Control.Feedback type="invalid">{passwordError}</Form.Control.Feedback>}
                     </FloatingLabel>
-                    
-                    <div 
-                        className="password-toggle"
-                        onClick={() => !isLoading && setPasswordVisible((prev) => !prev)}
-                    >
+
+                    <div className="password-toggle" onClick={() => !isLoading && setPasswordVisible((prev) => !prev)}>
                         {passwordVisible ? <HidePasswordIcon /> : <ShowPasswordIcon />}
                     </div>
                 </div>
@@ -240,33 +237,17 @@ export default function Register({ setActiveIndex }) {
                     {addressError && <Form.Control.Feedback type="invalid">{addressError}</Form.Control.Feedback>}
                 </FloatingLabel>
 
-                <Button 
-                    variant="accent" 
-                    type="submit" 
-                    className="mt-3"
-                    disabled={submitDisabled}
-                >
+                <Button variant="accent" type="submit" className="mt-3" disabled={submitDisabled}>
                     {isLoading ? (
-                        <Spinner 
-                            as="span"
-                            animation="border"
-                            size="sm"
-                            role="status"
-                            aria-hidden="true"
-                            className="me-2"
-                        />
+                        <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                     ) : null}
                     {isLoading ? "Creating Account..." : "Register"}
                 </Button>
             </Form>
-            
+
             <div className="form-footer">
                 <span>Already have an account?</span>
-                <Button 
-                    variant="link" 
-                    onClick={() => !isLoading && cleanNavigate(0)}
-                    disabled={isLoading}
-                >
+                <Button variant="link" onClick={() => !isLoading && cleanNavigate(0)} disabled={isLoading}>
                     Login
                 </Button>
             </div>
