@@ -12,22 +12,32 @@ export default function useApiPrivate() {
 
     apiManager.interceptors.request.use(
         (config) => {
-            showLoader();
+            if (config.method !== "get" || config.url.includes("/user/")) {
+                showLoader();
+            }
             return config;
         },
-        (err) => Promise.reject(err)
+        (err) => Promise.reject(err),
     );
 
     apiManager.interceptors.response.use(
         (response) => {
-            // TODO
             hideLoader();
             return response;
         },
         (error) => {
             hideLoader();
+            // 401 — session expired or not authenticated, redirect to login
+            if (error?.response?.status === 401) {
+                window.location.href = "/authenticate";
+                return Promise.reject(error);
+            }
+            // 500 — log it so it surfaces in the console
+            if (error?.response?.status >= 500) {
+                console.error("[API 500]", error?.response?.data || error.message);
+            }
             return Promise.reject(error);
-        }
+        },
     );
 
     const getCars = async (params) => {
@@ -54,7 +64,7 @@ export default function useApiPrivate() {
             const res = await apiManager.post(`/cars/newBooking/`, bookingData);
             return res.data;
         } catch (err) {
-            return null;
+            return { message: "Unable to book at the moment!", next: "" };
         }
     };
 
@@ -63,7 +73,7 @@ export default function useApiPrivate() {
             const res = await apiManager.post(`/cars/confirmBooking/`, { success });
             return res.data;
         } catch (err) {
-            return null;
+            return { message: "Unable to confirm booking!", next: "home" };
         }
     };
 
@@ -72,7 +82,7 @@ export default function useApiPrivate() {
             const res = await apiManager.put(`/cars/${id}`);
             return res.data;
         } catch (err) {
-            return null;
+            return { message: "Unable to retry booking!", next: "" };
         }
     };
 
@@ -81,7 +91,7 @@ export default function useApiPrivate() {
             const res = await apiManager.delete(`/cars/${id}`);
             return res.data;
         } catch (err) {
-            return null;
+            return { message: "Unable to cancel booking!", next: "home" };
         }
     };
 
@@ -91,7 +101,7 @@ export default function useApiPrivate() {
             const res = await apiManager.post(`/user/update`, { updateData: data });
             return res.data;
         } catch (err) {
-            return null;
+            return { message: "Unable to update user!", next: "" };
         }
     };
 
