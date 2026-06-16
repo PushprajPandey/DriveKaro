@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Alert, FloatingLabel, Form } from "react-bootstrap";
-import { HidePasswordIcon, ShowPasswordIcon,} from "../../assets";
+import { HidePasswordIcon, ShowPasswordIcon } from "../../assets";
 import { useApiPublic } from "../../hooks";
 
 export default function ResetPassword({ email, setActiveIndex }) {
@@ -30,7 +30,7 @@ export default function ResetPassword({ email, setActiveIndex }) {
         setPasswordError("");
         return true;
     };
-    
+
     const validateConfirmPassword = () => {
         if (confirmPassword === "") {
             setConfirmPasswordError("Confirm password is required");
@@ -43,7 +43,7 @@ export default function ResetPassword({ email, setActiveIndex }) {
         setConfirmPasswordError("");
         return true;
     };
-    
+
     const cleanNavigate = (dest) => {
         setPassword("");
         setPasswordVisible(false);
@@ -55,20 +55,20 @@ export default function ResetPassword({ email, setActiveIndex }) {
         setSubmitDisabled(true);
         setActiveIndex(dest);
     };
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const isPasswordValid = validatePassword();
         const isConfirmValid = validateConfirmPassword();
-        
+
         if (!isPasswordValid || !isConfirmValid) {
             return;
         }
-        
+
         try {
             const res = await resetPassword(email, password);
-            
+
             if (res.success) {
                 setFormError("");
                 alert("Password reset successful! You can now login with your new password.");
@@ -80,24 +80,23 @@ export default function ResetPassword({ email, setActiveIndex }) {
             setFormError("An error occurred. Please try again later.");
         }
     };
-    
+
     useEffect(() => {
         const isPasswordValid = password && !passwordError;
         const isConfirmValid = confirmPassword && !confirmPasswordError;
         setSubmitDisabled(!(isPasswordValid && isConfirmValid));
     }, [password, confirmPassword, passwordError, confirmPasswordError]);
-    
+
     return (
         <div className="auth-card">
             <div className="logo-container">
-            
-                <span className="brand-text">VeloRent</span>
+                <span className="brand-text">DriveKaro</span>
             </div>
-            
+
             <h3>Reset Password</h3>
-            
+
             {formError && <Alert variant="danger">{formError}</Alert>}
-            
+
             <Form className="w-100" onSubmit={handleSubmit}>
                 <div className="password-field">
                     <FloatingLabel controlId="resPassword" label="New Password">
@@ -111,15 +110,12 @@ export default function ResetPassword({ email, setActiveIndex }) {
                         />
                         {passwordError && <Form.Control.Feedback type="invalid">{passwordError}</Form.Control.Feedback>}
                     </FloatingLabel>
-                    
-                    <div 
-                        className="password-toggle"
-                        onClick={() => setPasswordVisible((prev) => !prev)}
-                    >
+
+                    <div className="password-toggle" onClick={() => setPasswordVisible((prev) => !prev)}>
                         {passwordVisible ? <HidePasswordIcon /> : <ShowPasswordIcon />}
                     </div>
                 </div>
-                
+
                 <div className="password-field">
                     <FloatingLabel controlId="resConfirmPassword" label="Confirm Password">
                         <Form.Control
@@ -132,24 +128,17 @@ export default function ResetPassword({ email, setActiveIndex }) {
                         />
                         {confirmPasswordError && <Form.Control.Feedback type="invalid">{confirmPasswordError}</Form.Control.Feedback>}
                     </FloatingLabel>
-                    
-                    <div 
-                        className="password-toggle"
-                        onClick={() => setConfirmPasswordVisible((prev) => !prev)}
-                    >
+
+                    <div className="password-toggle" onClick={() => setConfirmPasswordVisible((prev) => !prev)}>
                         {confirmPasswordVisible ? <HidePasswordIcon /> : <ShowPasswordIcon />}
                     </div>
                 </div>
-                
-                <Button 
-                    variant="accent" 
-                    type="submit" 
-                    disabled={submitDisabled}
-                >
+
+                <Button variant="accent" type="submit" disabled={submitDisabled}>
                     Reset Password
                 </Button>
             </Form>
-            
+
             <div className="form-footer">
                 <Button variant="link" onClick={() => cleanNavigate(0)}>
                     Back to Login
