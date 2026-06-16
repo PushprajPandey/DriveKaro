@@ -1,5 +1,5 @@
 {
-    "name": "velorent",
+    "name": "drivekaro",
     "version": "1.0.0",
     "description": "Car rental application",
     "main": "index.js",
@@ -17,7 +17,13 @@
     "engines": {
         "node": ">=16.0.0"
     },
-    "keywords": ["mern", "bike-rental", "react", "node", "mongodb"],
+    "keywords": [
+        "mern",
+        "bike-rental",
+        "react",
+        "node",
+        "mongodb"
+    ],
     "author": "",
     "license": "MIT",
     "devDependencies": {
