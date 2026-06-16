@@ -38,13 +38,11 @@ export default function Auth() {
                     alt="Car on road"
                 />
                 <div className="overlay-text">
-                    <h1>Welcome to VeloRent</h1>
+                    <h1>Welcome to DriveKaro</h1>
                     <p>Premium car rental services at your fingertips. Discover our fleet and enjoy the journey.</p>
                 </div>
             </div>
-            <div className="form-section">
-                {renderAuthComponent()}
-            </div>
+            <div className="form-section">{renderAuthComponent()}</div>
         </div>
     );
 }
