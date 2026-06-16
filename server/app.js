@@ -66,17 +66,32 @@ app.use((err, req, res, next) => {
     res.status(status).json({ message });
 });
 
-mongoose
-    .connect(ENV.MONGODB_URL, { dbName: ENV.DB_NAME })
-    .then(async () => {
-        console.log("Connected to MongoDb");
-        app.listen(ENV.PORT, () => console.log(`Server is up at ${ENV.PORT}`));
-        await firstTimeSetup();
-    })
-    .catch((err) => {
-        console.error("Failed to connect to MongoDB", err);
-        process.exit(1);
-    });
+// On Vercel, app.listen() is not needed — Vercel handles the port.
+// For local development, we start the server normally.
+if (process.env.NODE_ENV !== "production") {
+    mongoose
+        .connect(ENV.MONGODB_URL, { dbName: ENV.DB_NAME })
+        .then(async () => {
+            console.log("Connected to MongoDb");
+            app.listen(ENV.PORT, () => console.log(`Server is up at ${ENV.PORT}`));
+            await firstTimeSetup();
+        })
+        .catch((err) => {
+            console.error("Failed to connect to MongoDB", err);
+            process.exit(1);
+        });
+} else {
+    // Production (Vercel) — connect to DB once and export the app
+    mongoose
+        .connect(ENV.MONGODB_URL, { dbName: ENV.DB_NAME })
+        .then(async () => {
+            console.log("Connected to MongoDb");
+            await firstTimeSetup();
+        })
+        .catch((err) => {
+            console.error("Failed to connect to MongoDB", err);
+        });
+}
 
 // Only seeds cars if the collection is empty — safe to run on every restart
 const firstTimeSetup = async () => {
@@ -92,3 +107,5 @@ const firstTimeSetup = async () => {
         console.error("firstTimeSetup error:", err);
     }
 };
+
+export default app;
