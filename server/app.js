@@ -30,17 +30,17 @@ app.use("/api/cars", CarRouter);
 app.use("/api/user", UserRouter);
 
 // Serve static assets if in production
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
     // Set static folder
-    const clientBuildPath = path.resolve(__dirname, '../client/build');
-    
+    const clientBuildPath = path.resolve(__dirname, "../client/build");
+
     // Check if client build folder exists
     if (fs.existsSync(clientBuildPath)) {
         app.use(express.static(clientBuildPath));
-        
-        app.get('*', (req, res) => {
-            if (!req.path.startsWith('/api')) {
-                res.sendFile(path.resolve(clientBuildPath, 'index.html'));
+
+        app.get("*", (req, res) => {
+            if (!req.path.startsWith("/api")) {
+                res.sendFile(path.resolve(clientBuildPath, "index.html"));
             }
         });
     }
@@ -51,7 +51,7 @@ mongoose.connect(ENV.MONGODB_URL, { dbName: ENV.DB_NAME }).then(() => {
     app.listen(ENV.PORT, () => console.log(`Server is up at ${ENV.PORT}`));
 
     // FIRST TIME IMPORTING CARS
-   //firstTimeSetup();
+    firstTimeSetup();
 });
 
 const firstTimeSetup = () => {
