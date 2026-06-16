@@ -29,6 +29,11 @@ app.use("/api/auth", AuthRouter);
 app.use("/api/cars", CarRouter);
 app.use("/api/user", UserRouter);
 
+// 404 handler — unknown API routes
+app.use("/api/*", (req, res) => {
+    res.status(404).json({ message: "API route not found" });
+});
+
 // Serve static assets if in production
 if (process.env.NODE_ENV === "production") {
     // Set static folder
@@ -46,16 +51,44 @@ if (process.env.NODE_ENV === "production") {
     }
 }
 
-mongoose.connect(ENV.MONGODB_URL, { dbName: ENV.DB_NAME }).then(() => {
-    console.log("Connected to MongoDb");
-    app.listen(ENV.PORT, () => console.log(`Server is up at ${ENV.PORT}`));
-
-    // FIRST TIME IMPORTING CARS
-    firstTimeSetup();
+// Global error handler — catches any unhandled errors thrown in route handlers
+// Must be defined AFTER all routes and with 4 parameters so Express recognises it
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+    console.error("[Global Error Handler]", err);
+    const status = err.status || err.statusCode || 500;
+    const message =
+        process.env.NODE_ENV === "production"
+            ? status === 500
+                ? "Internal server error"
+                : err.message || "An error occurred"
+            : err.message || "Internal server error";
+    res.status(status).json({ message });
 });
 
-const firstTimeSetup = () => {
-    const data = JSON.parse(fs.readFileSync("./data.json", "utf-8"));
-    CarModel.insertMany(data);
-    CarModel.createIndexes({ name: "text" });
+mongoose
+    .connect(ENV.MONGODB_URL, { dbName: ENV.DB_NAME })
+    .then(async () => {
+        console.log("Connected to MongoDb");
+        app.listen(ENV.PORT, () => console.log(`Server is up at ${ENV.PORT}`));
+        await firstTimeSetup();
+    })
+    .catch((err) => {
+        console.error("Failed to connect to MongoDB", err);
+        process.exit(1);
+    });
+
+// Only seeds cars if the collection is empty — safe to run on every restart
+const firstTimeSetup = async () => {
+    try {
+        const count = await CarModel.countDocuments();
+        if (count === 0) {
+            const data = JSON.parse(fs.readFileSync("./data.json", "utf-8"));
+            await CarModel.insertMany(data);
+            console.log("Cars seeded successfully");
+        }
+        await CarModel.createIndexes({ name: "text" });
+    } catch (err) {
+        console.error("firstTimeSetup error:", err);
+    }
 };
