@@ -4,6 +4,7 @@ import "./App.sass";
 import CustomRoutes from "./Routes.jsx";
 import { useApiPublic, useLoader } from "./hooks";
 import { Loader, ServiceUnavailable } from "./pages";
+import ErrorBoundary from "./pages/misc/ErrorBoundary.jsx";
 
 export default function App() {
     const { healthCheck } = useApiPublic();
@@ -18,16 +19,20 @@ export default function App() {
         checkBackendStatus();
     }, [healthCheck]);
 
-    return backendUp ? (
-        <main className="app">
-            <Suspense fallback={<Loader />}>
-                {isLoading && <Loader />}
-                <BrowserRouter>
-                    <CustomRoutes />
-                </BrowserRouter>
-            </Suspense>
-        </main>
-    ) : (
-        <ServiceUnavailable />
+    return (
+        <ErrorBoundary>
+            {backendUp ? (
+                <main className="app">
+                    <Suspense fallback={<Loader />}>
+                        {isLoading && <Loader />}
+                        <BrowserRouter>
+                            <CustomRoutes />
+                        </BrowserRouter>
+                    </Suspense>
+                </main>
+            ) : (
+                <ServiceUnavailable />
+            )}
+        </ErrorBoundary>
     );
 }
