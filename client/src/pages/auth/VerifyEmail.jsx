@@ -26,14 +26,18 @@ export default function VerifyEmail() {
                 const res = await verifyEmail(token);
                 setMessage(res.message || "");
                 setVerifying(false);
-                
+
                 if (res?.next === "login") {
                     setTimeout(() => navigate("/authenticate", { replace: true }), 3000);
                 } else if (res?.next === "update_password") {
-                    setTimeout(() => navigate("/authenticate", { 
-                        replace: true, 
-                        state: { routeIndex: 2, routeEmail: res.email } 
-                    }), 3000);
+                    setTimeout(
+                        () =>
+                            navigate("/authenticate", {
+                                replace: true,
+                                state: { routeIndex: 2, routeEmail: res.email },
+                            }),
+                        3000,
+                    );
                 } else {
                     setError(true);
                     setTimeout(() => navigate("/authenticate", { replace: true }), 3000);
@@ -45,7 +49,7 @@ export default function VerifyEmail() {
                 setTimeout(() => navigate("/authenticate", { replace: true }), 3000);
             }
         };
-        
+
         verify();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -55,11 +59,11 @@ export default function VerifyEmail() {
             <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
                 <Card className="auth-card text-center p-5">
                     <div className="logo-container justify-content-center mb-4">
-                        <span className="brand-text">VeloRent</span>
+                        <span className="brand-text">DriveKaro</span>
                     </div>
-                    
+
                     <h3 className="text-center mb-4">Email Verification</h3>
-                    
+
                     {verifying ? (
                         <div className="text-center">
                             <Spinner animation="border" variant="primary" className="mb-3" />
@@ -68,9 +72,7 @@ export default function VerifyEmail() {
                     ) : (
                         <Alert variant={error ? "danger" : "success"}>
                             {message}
-                            <p className="mt-2 small">
-                                You will be redirected to the login page in a few seconds...
-                            </p>
+                            <p className="mt-2 small">You will be redirected to the login page in a few seconds...</p>
                         </Alert>
                     )}
                 </Card>
